@@ -1,0 +1,2 @@
+// check
+alert("Hi");
