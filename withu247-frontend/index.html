@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WithU247 - Mental Health Support in Dwarka</title>
+    <meta name="description" content="Find mental health professionals, track your mood, and get AI-powered support in Dwarka. Your mental wellness journey starts here.">
+    <meta name="keywords" content="mental health, therapy, counseling, Dwarka, Delhi, mood tracking, AI chatbot">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "WithU247",
+        "description": "Mental health support platform for Dwarka residents",
+        "url": "https://withu247.com"
+    }
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>WithU<span class="brand-accent">247</span></h1>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#therapists" class="nav-link">Find Therapists</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="/chat.html" class="nav-link">AI Support</a>
+            </div>
+            <div class="nav-auth">
+                <button class="btn-secondary" onclick="showLoginModal()">Login</button>
+                <button class="btn-primary" onclick="showSignupModal()">Get Started</button>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-text" data-aos="fade-up" data-aos-duration="1000">
+                    <h1 class="hero-title">
+                        Your Mental Health Journey
+                        <span class="text-gradient">Starts Here</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Connect with verified mental health professionals in Dwarka, track your mood, 
+                        and get 24/7 AI-powered support. Take the first step towards better mental wellness.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn-primary btn-large" onclick="startQuiz()">
+                            Take Mental Health Assessment
+                        </button>
+                        <button class="btn-secondary btn-large" onclick="exploreTherapists()">
+                            Find Therapists Near You
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>50+</h3>
+                        <p>Verified Therapists</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>1000+</h3>
+                        <p>Happy Users</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>24/7</h3>
+                        <p>AI Support</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>4.8★</h3>
+                        <p>Average Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Everything You Need for Mental Wellness</h2>
+                <p>Comprehensive tools and support designed specifically for your mental health journey</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Feature 1: Therapist Directory -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3>Find Local Therapists</h3>
+                    <p>Discover verified mental health professionals in Dwarka with ratings, specializations, and real-time availability.</p>
+                    <button class="feature-btn" onclick="window.location.href='/map.html'">Explore Map</button>
+                </div>
+
+                <!-- Feature 2: AI Chatbot -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>24/7 AI Support</h3>
+                    <p>Get instant mental health guidance, coping strategies, and crisis support from our AI-powered assistant.</p>
+                    <button class="feature-btn" onclick="window.location.href='/chat.html'">Start Chatting</button>
+                </div>
+
+                <!-- Feature 3: Mood Tracking -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                        </svg>
+                    </div>
+                    <h3>Mood Tracking</h3>
+                    <p>Monitor your emotional well-being with daily mood logs, insights, and personalized recommendations.</p>
+                    <button class="feature-btn" onclick="window.location.href='/mood.html'">Track Mood</button>
+                </div>
+
+                <!-- Feature 4: Mental Health Quiz -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4"></path>
+                            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+                            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+                        </svg>
+                    </div>
+                    <h3>Mental Health Assessment</h3>
+                    <p>Take our comprehensive quiz to understand your mental health needs and get personalized therapist recommendations.</p>
+                    <button class="feature-btn" onclick="window.location.href='/quiz.html'">Take Assessment</button>
+                </div>
+
+                <!-- Feature 5: Journaling -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14,2 14,8 20,8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10,9 9,9 8,9"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Digital Journaling</h3>
+                    <p>Express your thoughts and feelings in a safe, private space with guided prompts and mood correlation.</p>
+                    <button class="feature-btn" onclick="window.location.href='/journal.html'">Start Writing</button>
+                </div>
+
+                <!-- Feature 6: Booking System -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3>Easy Booking</h3>
+                    <p>Schedule appointments with therapists seamlessly. View availability, book sessions, and manage your appointments.</p>
+                    <button class="feature-btn" onclick="window.location.href='/booking.html'">Book Session</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Therapists Preview Section -->
+    <section class="therapists-preview" id="therapists">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Meet Our Verified Therapists</h2>
+                <p>Experienced mental health professionals serving the Dwarka community</p>
+            </div>
+            
+            <div class="therapists-carousel" id="therapists-carousel">
+                <!-- Therapist cards will be loaded dynamically -->
+            </div>
+            
+            <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                <button class="btn-primary btn-large" onclick="window.location.href='/map.html'">
+                    View All Therapists on Map
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content" data-aos="fade-up">
+                <h2>Ready to Start Your Mental Health Journey?</h2>
+                <p>Join thousands of people in Dwarka who have taken the first step towards better mental wellness.</p>
+                <div class="cta-actions">
+                    <button class="btn-primary btn-large" onclick="showSignupModal()">
+                        Get Started Today
+                    </button>
+                    <button class="btn-secondary btn-large" onclick="window.location.href='/chat.html'">
+                        Talk to AI Assistant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>WithU<span class="brand-accent">247</span></h3>
+                    <p>Supporting mental health in Dwarka, one person at a time.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Platform</h4>
+                        <a href="/map.html">Find Therapists</a>
+                        <a href="/quiz.html">Mental Health Quiz</a>
+                        <a href="/chat.html">AI Support</a>
+                        <a href="/mood.html">Mood Tracker</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="/help.html">Help Center</a>
+                        <a href="/crisis.html">Crisis Resources</a>
+                        <a href="/contact.html">Contact Us</a>
+                        <a href="/privacy.html">Privacy Policy</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Emergency</h4>
+                        <p><strong>Crisis Helpline:</strong></p>
+                        <p>📞 1800-599-0019</p>
+                        <p><strong>Emergency:</strong></p>
+                        <p>📞 102 / 108</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 WithU247. All rights reserved. | Made with ❤️ for Dwarka</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Welcome Back</h3>
+                <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Login</button>
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Join WithU247</h3>
+                <button class="modal-close" onclick="closeModal('signupModal')">&times;</button>
+            </div>
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupUsername">Username</label>
+                    <input type="text" id="signupUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Create Account</button>
+                <p class="auth-switch">
+                    Already have an account? <a href="#" onclick="switchToLogin()">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
+</body>
+</html>
+
