@@ -8,7 +8,9 @@ import axios from 'axios';
  */
 export async function searchNearbyHospitals(lat, lng) {
   try {
-    const url = `https://photon.komoot.io/api/?q=hospital&lat=${lat}&lon=${lng}&limit=10`;
+    // Optimized for Delhi search
+    const query = `hospital in Delhi`;
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${lat || 28.6139}&lon=${lng || 77.2090}&limit=10`;
     console.log(`➡️ Fetching hospitals from Photon: ${url}`);
     
     const res = await axios.get(url, { timeout: 5000 });
@@ -42,7 +44,8 @@ export async function searchNearbyHospitals(lat, lng) {
  */
 export async function geocodeAddress(query) {
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    // Delhi viewbox: 76.84, 28.41, 77.35, 28.88
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&viewbox=76.84,28.88,77.35,28.41&bounded=0`;
     const res = await axios.get(url, {
       headers: { "User-Agent": "WithU247-Assistant" }, // Nominatim requires a user-agent
       timeout: 5000

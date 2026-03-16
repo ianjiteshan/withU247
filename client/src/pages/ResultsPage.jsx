@@ -114,11 +114,13 @@ export default function ResultsPage() {
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 flex items-center gap-4">
               Local Clinical Facilities
               <div className="h-[1px] flex-1 bg-zinc-800" />
-            </h2>
-
-            {/* Leaflet Map Integration */}
+            </h2>            {/* Leaflet Map Integration */}
             {data.hospitals?.length > 0 && state?.lat && state?.lng && (
-              <div className="h-[300px] w-full rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl mb-8 z-0">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="h-[400px] w-full rounded-2xl overflow-hidden border border-zinc-800 shadow-[0_0_50px_rgba(220,38,38,0.1)] mb-12 z-0"
+              >
                 <MapContainer center={[state.lat, state.lng]} zoom={13} style={{ height: '100%', width: '100%' }}>
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -127,47 +129,67 @@ export default function ResultsPage() {
                   {data.hospitals.map((h, idx) => (
                     <Marker key={idx} position={[h.lat, h.lng]}>
                       <Popup>
-                        <div className="text-black">
-                          <strong className="block">{h.name}</strong>
-                          <span className="text-xs">{h.address}</span>
+                        <div className="p-2">
+                          <strong className="text-zinc-900 block text-sm mb-1">{h.name}</strong>
+                          <span className="text-zinc-500 text-xs leading-tight">{h.address}</span>
                         </div>
                       </Popup>
                     </Marker>
                   ))}
-                  <Marker position={[state.lat, state.lng]}>
+                  <Marker position={[state.lat, state.lng]} icon={L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: #dc2626; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                  })}>
                     <Popup>
-                      <div className="text-black font-bold italic">Your Location</div>
+                      <div className="text-zinc-900 font-bold italic text-sm">Your Current Location</div>
                     </Popup>
                   </Marker>
                 </MapContainer>
-              </div>
+              </motion.div>
             )}
 
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {data.hospitals?.length > 0 ? (
                 data.hospitals.map((h, idx) => (
-                  <motion.div
-                    whileHover={{ x: 10, backgroundColor: "rgba(24, 24, 27, 0.8)" }}
-                    key={idx}
-                    className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl transition-all"
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    whileHover={{ scale: 1.02, backgroundColor: "rgba(39, 39, 42, 0.5)" }}
+                    key={idx} 
+                    className="group p-8 bg-zinc-900/40 backdrop-blur-md border border-zinc-800 rounded-3xl transition-all cursor-pointer relative overflow-hidden"
                   >
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-black text-white uppercase text-xs tracking-wider">{h.name}</h4>
-                      <div className="flex items-center gap-1 text-red-600 text-xs font-bold">
-                        <span>📍</span>
-                        <span>{h.rating || "OSM"}</span>
+                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-red-600 text-xl">→</span>
+                    </div>
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="space-y-1">
+                        <h4 className="font-black text-white text-lg tracking-tight group-hover:text-red-600 transition-colors uppercase italic">{h.name}</h4>
+                        <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em]">{h.address}</p>
+                      </div>
+                      <div className="flex items-center gap-2 bg-zinc-800/50 px-3 py-1 rounded-full border border-zinc-700/50">
+                        <span className="text-red-600 text-xs">📍</span>
+                        <span className="text-zinc-300 text-[10px] font-black uppercase tracking-widest">{h.id ? `ID: ${h.id.toString().slice(0,6)}` : "CLINIC"}</span>
                       </div>
                     </div>
-                    <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{h.address}</p>
+                    <div className="h-[1px] w-full bg-zinc-800/50 mb-4" />
+                    <div className="flex gap-4">
+                      <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest bg-zinc-950 px-2 py-1 rounded">Emergency</span>
+                      <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest bg-zinc-950 px-2 py-1 rounded">Verified</span>
+                    </div>
                   </motion.div>
                 ))
               ) : (
-                <div className="p-10 border-2 border-dashed border-zinc-800 rounded-3xl text-center">
-                  <p className="text-zinc-700 font-black uppercase tracking-[0.2em] text-[10px]">No matches in your vicinity</p>
+                <div className="p-20 border-2 border-dashed border-zinc-800 rounded-[40px] text-center bg-zinc-900/10">
+                  <div className="text-4xl mb-6 opacity-20">🏥</div>
+                  <p className="text-zinc-700 font-black uppercase tracking-[0.4em] text-xs">Scanning Local Networks... No Matches</p>
                 </div>
               )}
             </div>
           </section>
+ion>
 
           {/* Call to Action Column */}
           <section className="md:col-span-2 flex flex-col gap-6">
