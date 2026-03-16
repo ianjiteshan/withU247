@@ -2,6 +2,17 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for Leaflet default icon issues in React
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5005";
 
@@ -66,7 +77,7 @@ export default function ResultsPage() {
       >
         {/* Header Section */}
         <div className="text-center relative">
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -85,7 +96,7 @@ export default function ResultsPage() {
         {/* Clinical Insights Card */}
         <section className="bg-zinc-900 border border-zinc-800 rounded-3xl p-10 shadow-2xl relative group overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-5 transition-opacity group-hover:opacity-10">
-            <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
           </div>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-600 mb-8 flex items-center gap-4">
             Analysis Summary
@@ -104,19 +115,47 @@ export default function ResultsPage() {
               Local Clinical Facilities
               <div className="h-[1px] flex-1 bg-zinc-800" />
             </h2>
+
+            {/* Leaflet Map Integration */}
+            {data.hospitals?.length > 0 && state?.lat && state?.lng && (
+              <div className="h-[300px] w-full rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl mb-8 z-0">
+                <MapContainer center={[state.lat, state.lng]} zoom={13} style={{ height: '100%', width: '100%' }}>
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  {data.hospitals.map((h, idx) => (
+                    <Marker key={idx} position={[h.lat, h.lng]}>
+                      <Popup>
+                        <div className="text-black">
+                          <strong className="block">{h.name}</strong>
+                          <span className="text-xs">{h.address}</span>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+                  <Marker position={[state.lat, state.lng]}>
+                    <Popup>
+                      <div className="text-black font-bold italic">Your Location</div>
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              </div>
+            )}
+
             <div className="space-y-4">
               {data.hospitals?.length > 0 ? (
                 data.hospitals.map((h, idx) => (
-                  <motion.div 
+                  <motion.div
                     whileHover={{ x: 10, backgroundColor: "rgba(24, 24, 27, 0.8)" }}
-                    key={idx} 
+                    key={idx}
                     className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl transition-all"
                   >
                     <div className="flex justify-between items-center mb-2">
                       <h4 className="font-black text-white uppercase text-xs tracking-wider">{h.name}</h4>
                       <div className="flex items-center gap-1 text-red-600 text-xs font-bold">
-                        <span>★</span>
-                        <span>{h.rating || "N/A"}</span>
+                        <span>📍</span>
+                        <span>{h.rating || "OSM"}</span>
                       </div>
                     </div>
                     <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{h.address}</p>
@@ -134,19 +173,19 @@ export default function ResultsPage() {
           <section className="md:col-span-2 flex flex-col gap-6">
             <div className="bg-gradient-to-br from-red-600/20 via-zinc-900 to-zinc-900 border border-red-600/20 rounded-3xl p-10 text-center flex-1 flex flex-col justify-center">
               <h3 className="text-2xl font-black mb-6 uppercase tracking-tighter leading-none italic">
-                Need <span className="text-red-600 italic">Priority</span> <br/> Consult?
+                Need <span className="text-red-600 italic">Priority</span> <br /> Consult?
               </h3>
               <p className="text-zinc-500 text-xs font-bold mb-10 leading-relaxed uppercase tracking-widest">
                 Immediate access to AI health specialists or community therapists.
               </p>
               <div className="space-y-4">
-                <button 
+                <button
                   onClick={() => navigate("/chat")}
                   className="w-full bg-white text-black font-black py-4 rounded-lg uppercase text-[10px] tracking-[0.2em] hover:bg-zinc-200 transition-all shadow-xl"
                 >
                   Start AI Chat
                 </button>
-                <button 
+                <button
                   onClick={() => navigate("/therapists")}
                   className="w-full bg-red-600 text-white font-black py-4 rounded-lg uppercase text-[10px] tracking-[0.2em] hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 border border-red-400/20"
                 >
@@ -159,9 +198,9 @@ export default function ResultsPage() {
 
         {/* Footer Navigation */}
         <div className="pt-20 text-center border-t border-zinc-900">
-          <motion.button 
+          <motion.button
             whileHover={{ letterSpacing: "0.6em" }}
-            onClick={() => navigate("/symptom")} 
+            onClick={() => navigate("/symptom")}
             className="text-zinc-700 font-black uppercase text-[10px] tracking-[0.4em] hover:text-white transition-all"
           >
             ← New Diagnostic Session

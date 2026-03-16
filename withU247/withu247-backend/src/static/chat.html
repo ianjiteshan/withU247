@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mental Health Assistant - WithU247</title>
+    <meta name="description" content="Get 24/7 mental health support from our AI-powered assistant. Confidential, instant, and always available.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/chat.css">
+    
+    <!-- Animation Libraries -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/" style="text-decoration: none; color: inherit;">
+                    <h1>WithU<span class="brand-accent">247</span></h1>
+                </a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/map.html" class="nav-link">Find Therapists</a>
+                <a href="/quiz.html" class="nav-link">Assessment</a>
+                <a href="/mood.html" class="nav-link">Mood Tracker</a>
+                <a href="/chat.html" class="nav-link active">AI Support</a>
+            </div>
+            <div class="nav-auth">
+                <button class="btn-secondary" onclick="showLoginModal()">Login</button>
+                <button class="btn-primary" onclick="showSignupModal()">Get Started</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="ai-avatar">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6"></path>
+                    <path d="m9 9 3-3 3 3"></path>
+                    <path d="m9 15 3 3 3-3"></path>
+                    <path d="M1 12h6m6 0h6"></path>
+                    <path d="m9 9-3-3-3 3"></path>
+                    <path d="m15 9 3-3 3 3"></path>
+                    <path d="m9 15-3 3-3 3"></path>
+                    <path d="m15 15 3 3 3-3"></path>
+                </svg>
+            </div>
+            <div class="chat-info">
+                <h3>AI Mental Health Assistant</h3>
+                <p class="status">Online • Always here to help</p>
+            </div>
+            <div class="chat-actions">
+                <button class="btn-icon" onclick="clearChat()" title="Clear Chat">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                </button>
+                <button class="btn-icon" onclick="toggleChatInfo()" title="Chat Info">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message" data-aos="fade-up">
+                <div class="message-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                        <path d="m9 9 3-3 3 3"></path>
+                        <path d="m9 15 3 3 3-3"></path>
+                        <path d="M1 12h6m6 0h6"></path>
+                        <path d="m9 9-3-3-3 3"></path>
+                        <path d="m15 9 3-3 3 3"></path>
+                        <path d="m9 15-3 3-3 3"></path>
+                        <path d="m15 15 3 3 3-3"></path>
+                    </svg>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        Hello! I'm your AI mental health assistant. I'm here to provide support, guidance, and resources for your mental wellness journey. How are you feeling today?
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quickActions">
+            <button class="quick-action-btn" onclick="sendQuickMessage('I\'m feeling anxious')">
+                😰 I'm feeling anxious
+            </button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('I need coping strategies')">
+                🧘 I need coping strategies
+            </button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('I want to talk about my mood')">
+                💭 I want to talk about my mood
+            </button>
+            <button class="quick-action-btn" onclick="sendQuickMessage('I need help finding a therapist')">
+                👥 I need help finding a therapist
+            </button>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea 
+                    id="chatInput" 
+                    placeholder="Type your message here... Press Enter to send"
+                    rows="1"
+                ></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22,2 15,22 11,13 2,9"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-actions">
+                <button class="btn-icon" onclick="toggleVoiceInput()" title="Voice Input">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+                <span class="typing-indicator" id="typingIndicator">AI is typing...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crisis Resources Modal -->
+    <div class="modal" id="crisisModal">
+        <div class="modal-content crisis-modal">
+            <div class="modal-header">
+                <h3>🚨 Crisis Resources</h3>
+                <button class="modal-close" onclick="closeModal('crisisModal')">&times;</button>
+            </div>
+            <div class="crisis-content">
+                <p><strong>If you're in immediate danger, please call emergency services:</strong></p>
+                <div class="emergency-numbers">
+                    <div class="emergency-item">
+                        <strong>Emergency Services:</strong>
+                        <a href="tel:112">112</a> | <a href="tel:102">102</a>
+                    </div>
+                    <div class="emergency-item">
+                        <strong>Mental Health Helpline:</strong>
+                        <a href="tel:18005990019">1800-599-0019</a>
+                    </div>
+                    <div class="emergency-item">
+                        <strong>Suicide Prevention:</strong>
+                        <a href="tel:9152987821">91529-87821</a>
+                    </div>
+                </div>
+                <p>You can also visit the nearest hospital emergency room or contact a trusted friend or family member.</p>
+                <div class="crisis-actions">
+                    <button class="btn-primary" onclick="window.location.href='/map.html'">
+                        Find Nearby Therapists
+                    </button>
+                    <button class="btn-secondary" onclick="closeModal('crisisModal')">
+                        Continue Chatting
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Info Sidebar -->
+    <div class="chat-sidebar" id="chatSidebar">
+        <div class="sidebar-header">
+            <h4>Chat Information</h4>
+            <button class="btn-icon" onclick="toggleChatInfo()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <div class="info-section">
+                <h5>Privacy & Security</h5>
+                <ul>
+                    <li>Your conversations are confidential</li>
+                    <li>Data is encrypted and secure</li>
+                    <li>No personal information is stored</li>
+                    <li>You can clear chat history anytime</li>
+                </ul>
+            </div>
+            <div class="info-section">
+                <h5>What I Can Help With</h5>
+                <ul>
+                    <li>Emotional support and guidance</li>
+                    <li>Coping strategies and techniques</li>
+                    <li>Mental health resources</li>
+                    <li>Therapist recommendations</li>
+                    <li>Crisis intervention</li>
+                </ul>
+            </div>
+            <div class="info-section">
+                <h5>Important Note</h5>
+                <p>I'm an AI assistant and cannot replace professional mental health care. For serious concerns, please consult with a qualified therapist or counselor.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/chat.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
+</body>
+</html>
+

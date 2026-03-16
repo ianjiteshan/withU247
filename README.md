@@ -1,6 +1,6 @@
-# 📖 MediSync – Intelligent Medical Symptom Assistant
+# 📖 WithU247 – Intelligent Medical Symptom Assistant
 
-MediSync is a **full-stack healthcare assistant** that helps users:
+withU247 is a **full-stack healthcare assistant** that helps users:
 * 🧠 **Analyze symptoms** using PubMed medical research
 * 👨‍⚕️ **Map symptoms to doctors** via AI triage
 * 🏥 **Find nearby hospitals/doctors** using Google Maps
@@ -21,7 +21,7 @@ Built with **React, TailwindCSS, ShadCN UI, Express, MongoDB, LangChain, and Ope
 ## 📂 Project Structure
 
 ```
-MediSync/
+withU247/
 ├── client/               # React Frontend
 │   ├── src/
 │   │   ├── pages/        # SymptomInput, ResultsPage, etc.
@@ -46,8 +46,8 @@ MediSync/
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/medisync.git
-cd medisync
+git clone https://github.com/ianjiteshan/withU247.git
+cd withU247
 ```
 
 ### 2️⃣ Backend Setup
@@ -113,11 +113,12 @@ The frontend will run on `http://localhost:5173`
 * **MongoDB** - Database
 * **Mongoose** - ODM for MongoDB
 * **LangChain** - AI framework
-* **OpenAI GPT-4o-mini** - Language model
+* **Groq Llama 3.3** - Language model (Pivoted from OpenAI)
 
 ### APIs & Services
 * **PubMed API** - Medical research papers
-* **Google Maps Places API** - Location services
+* **Leaflet / OpenStreetMap** - Map rendering and data
+* **Photon API** - Free geocoding and hospital search
 * **MongoDB Atlas Vector Search** - Semantic search
 
 ## 🔧 API Endpoints
@@ -230,13 +231,13 @@ cd server
 ## 📞 Support
 
 If you encounter any issues:
-1. Check the [Issues](https://github.com/your-username/medisync/issues) page
+1. Check the [Issues](https://github.com/ianjiteshan/withU247/issues) page
 2. Create a new issue with detailed description
 3. Contact: pratyaksh1594@gmail.com
 
 ## ⚠️ Disclaimer
 
-**MediSync is for informational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals for medical concerns.**
+**WithU247 is for informational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals for medical concerns.**
 
 ## 🙏 Acknowledgments
 

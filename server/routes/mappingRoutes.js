@@ -1,121 +1,3 @@
-// import express from "express";
-// import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-// import { OpenAIEmbeddings } from "@langchain/openai";
-// import { RetrievalQAChain } from "langchain/chains";
-// import OpenAI from "openai";
-// import { searchPubMed, fetchPubMedDetails } from "../utils/pubmed.js";
-// import SymptomMapping from "../models/SymptomMapping.js";
-// import { Client } from "@googlemaps/google-maps-services-js";
-
-// const router = express.Router();
-// const client = new Client({});
-
-// //Ask OpenAI which doctor to consult
-// async function getDoctorSpecialty(symptom) {
-//   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-//   const completion = await openai.chat.completions.create({
-//     model: "gpt-4o-mini",
-//     messages: [
-//       {
-//         role: "system",
-//         content:
-//           "You are a medical triage assistant. Respond with ONLY the name of a doctor specialty (e.g., Cardiologist, Dermatologist, Neurologist).",
-//       },
-//       {
-//         role: "user",
-//         content: `A patient reports the symptom: "${symptom}". Which doctor should they consult?`,
-//       },
-//     ],
-//   });
-
-//   return completion.choices[0].message.content.trim();
-// }
-
-// //Main symptom route
-// router.post("/", async (req, res) => {
-//   try {
-//     const { symptom, lat, lng } = req.body;
-//     if (!symptom) {
-//       return res.status(400).json({ error: "Symptom is required" });
-//     }
-
-//     const ids = await searchPubMed(symptom);
-//     const pubmedDocs = await fetchPubMedDetails(ids);
-
-//     if (pubmedDocs.length === 0) {
-//       return res.json({
-//         symptom,
-//         message: "No PubMed articles found",
-//       });
-//     }
-
-//     const vectorStore = await MongoDBAtlasVectorSearch.fromDocuments(
-//       pubmedDocs.map((doc) => ({
-//         pageContent: doc.content,
-//         metadata: { pmid: doc.pmid, title: doc.title },
-//       })),
-//       new OpenAIEmbeddings({ apiKey: process.env.OPENAI_API_KEY }),
-//       {
-//         collection: "pubmed_vectors",
-//         indexName: "pubmed_index",
-//         textKey: "text",
-//         embeddingKey: "embedding",
-//       }
-//     );
-
-//     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-//     const chain = RetrievalQAChain.fromLLM(openai, vectorStore.asRetriever());
-
-//     const pubmedAnswer = await chain.call({
-//       query: `Summarize causes, prevention, and treatment options for: ${symptom}`,
-//     });
-
-//     // 2. Doctor Mapping + Google Maps
-//     let mapping = await SymptomMapping.findOne({ symptom: new RegExp(symptom, "i") });
-//     if (!mapping) {
-//       const specialty = await getDoctorSpecialty(symptom);
-//       mapping = new SymptomMapping({
-//         symptom: symptom.toLowerCase(),
-//         doctorSpecialty: specialty,
-//       });
-//       await mapping.save();
-//     }
-
-//     let hospitals = [];
-//     if (lat && lng) {
-//       const gmaps = await client.placesNearby({
-//         params: {
-//           location: `${lat},${lng}`,
-//           radius: 5000,
-//           keyword: mapping.doctorSpecialty,
-//           key: process.env.GOOGLE_MAPS_API_KEY,
-//         },
-//       });
-
-//       hospitals =
-//         gmaps.data.results?.map((place) => ({
-//           name: place.name,
-//           address: place.vicinity,
-//           rating: place.rating,
-//           location: place.geometry?.location,
-//         })) || [];
-//     }
-
-//     // Final Response
-//     res.json({
-//       symptom,
-//       pubmedSummary: pubmedAnswer.text,
-//       doctorSpecialty: mapping.doctorSpecialty,
-//       hospitals,
-//     });
-//   } catch (err) {
-//     console.error("❌ Symptom route error:", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
-
-// export default router;
-
 import express from "express";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
 import { OpenAIEmbeddings, ChatOpenAI } from "@langchain/openai";
@@ -123,11 +5,10 @@ import { RetrievalQAChain } from "langchain/chains";
 import OpenAI from "openai";
 import { searchPubMed, fetchPubMedDetails } from "../utils/pubmed.js";
 import SymptomMapping from "../models/SymptomMapping.js";
-import { Client } from "@googlemaps/google-maps-services-js";
 import clientPromise from "../utils/mongoClient.js";
+import { searchNearbyHospitals } from "../services/mapsService.js";
 
 const router = express.Router();
-const client = new Client({});
 
 // ✅ Ask OpenAI which doctor to consult
 async function getDoctorSpecialty(symptom) {
@@ -160,7 +41,7 @@ router.post("/", async (req, res) => {
   const timeout = setTimeout(() => {
     console.error("❌ Request timed out");
     return res.status(504).json({ error: "Request timed out" });
-  }, 20000); // 20 sec max
+  }, 30000); // Increased to 30s for OSM
 
   try {
     const { symptom, lat, lng } = req.body;
@@ -174,7 +55,7 @@ router.post("/", async (req, res) => {
 
     console.log("➡️ Step 2: Fetching PubMed details...");
     let pubmedDocs = await fetchPubMedDetails(ids);
-    pubmedDocs = pubmedDocs.slice(0, 5); // ✅ Limit to 5 docs max
+    pubmedDocs = pubmedDocs.slice(0, 5);
     console.log(`✅ Retrieved ${pubmedDocs.length} PubMed docs`);
 
     // ✅ Connect to MongoDB
@@ -226,32 +107,15 @@ router.post("/", async (req, res) => {
       await mapping.save();
     }
 
-    // ✅ Google Maps (Safe Fetch)
+    // ✅ OpenStreetMap / Photon (Free Triage)
     let hospitals = [];
     if (lat && lng) {
-      console.log("➡️ Step 7: Fetching hospitals from Google Maps...");
+      console.log("➡️ Step 7: Fetching hospitals from OpenStreetMap (Photon)...");
       try {
-        const gmaps = await client.placesNearby({
-          params: {
-            location: `${lat},${lng}`,
-            radius: 5000,
-            keyword: mapping.doctorSpecialty,
-            key: process.env.GOOGLE_MAPS_API_KEY,
-          },
-          timeout: 5000, // ⏳ 5 sec timeout
-        });
-
-        hospitals =
-          gmaps.data.results?.map((place) => ({
-            name: place.name,
-            address: place.vicinity,
-            rating: place.rating,
-            location: place.geometry?.location,
-          })) || [];
-
+        hospitals = await searchNearbyHospitals(lat, lng);
         console.log(`✅ Found ${hospitals.length} hospitals`);
       } catch (err) {
-        console.error("⚠️ Google Maps fetch failed:", err.message);
+        console.error("⚠️ OSM fetch failed:", err.message);
         hospitals = [];
       }
     }
