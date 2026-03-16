@@ -24,31 +24,35 @@ export default function ResultsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchResults = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const res = await axios.post(`${API_BASE_URL}/api/mapping`, {
-          symptom: state?.symptom,
-          lat: state?.lat,
-          lng: state?.lng,
-        });
-        setData(res.data);
-      } catch (err) {
-        console.error("❌ Error fetching results:", err);
-        setError("Failed to load clinical insights. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (state?.symptom) {
+    if (state?.symptom && state?.doctorSpecialty) {
+      // Data was passed directly from SymptomInput
+      setData(state);
+      setLoading(false);
+    } else if (state?.symptom) {
+      // Fallback: re-fetch if only symptom was passed
+      const fetchResults = async () => {
+        try {
+          setLoading(true);
+          setError("");
+          const res = await axios.post(`${API_BASE_URL}/api/mapping`, {
+            symptom: state?.symptom,
+            lat: state?.lat,
+            lng: state?.lng,
+          });
+          setData({ ...res.data, lat: state?.lat, lng: state?.lng });
+        } catch (err) {
+          console.error("❌ Error fetching results:", err);
+          setError("Failed to load clinical insights. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
       fetchResults();
     } else {
       setLoading(false);
       setError("No specific symptoms provided for analysis.");
     }
-  }, [state, navigate]);
+  }, [state]);
 
   if (loading) {
     return (

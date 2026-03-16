@@ -31,7 +31,13 @@ export default function SymptomInput() {
         lat: location?.lat,
         lng: location?.lng,
       });
-      navigate("/results", { state: { result: response.data } });
+      navigate("/results", { 
+        state: { 
+          ...response.data, 
+          lat: location?.lat, 
+          lng: location?.lng 
+        } 
+      });
     } catch (err) {
       console.error("Error fetching results:", err);
       alert("Something went wrong. Please try again.");
