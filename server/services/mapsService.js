@@ -12,7 +12,7 @@ export async function searchNearbyHospitals(lat, lng) {
     const query = `hospital in Delhi`;
     const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${lat || 28.6139}&lon=${lng || 77.2090}&limit=10`;
     console.log(`➡️ Fetching hospitals from Photon: ${url}`);
-    
+
     const res = await axios.get(url, { timeout: 5000 });
     const data = res.data;
 
@@ -50,7 +50,7 @@ export async function geocodeAddress(query) {
       headers: { "User-Agent": "WithU247-Assistant" }, // Nominatim requires a user-agent
       timeout: 5000
     });
-    
+
     if (res.data && res.data.length > 0) {
       return {
         lat: parseFloat(res.data[0].lat),

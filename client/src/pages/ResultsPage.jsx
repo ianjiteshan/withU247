@@ -114,7 +114,9 @@ export default function ResultsPage() {
             <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 flex items-center gap-4">
               Local Clinical Facilities
               <div className="h-[1px] flex-1 bg-zinc-800" />
-            </h2>            {/* Leaflet Map Integration */}
+            </h2>
+
+            {/* Leaflet Map Integration */}
             {data.hospitals?.length > 0 && state?.lat && state?.lng && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -189,7 +191,6 @@ export default function ResultsPage() {
               )}
             </div>
           </section>
-ion>
 
           {/* Call to Action Column */}
           <section className="md:col-span-2 flex flex-col gap-6">
