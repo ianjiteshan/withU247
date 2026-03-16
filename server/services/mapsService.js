@@ -1,13 +1,15 @@
 import axios from 'axios';
 
 /**
- * Searches for nearby hospitals using Nominatim (reverse geocode for city)
- * then Photon for actual hospital search with real location context.
+ * Searches for nearby hospitals/clinics using Nominatim (reverse geocode for city)
+ * then Photon for actual search with real location context.
+ * Tries specialty-specific search first, falls back to generic hospital search.
  * @param {number} lat - Latitude
  * @param {number} lng - Longitude
- * @returns {Promise<Array>} List of hospitals
+ * @param {string} specialty - Doctor specialty (e.g. "Cardiologist", "Dermatologist")
+ * @returns {Promise<Array>} List of hospitals/clinics
  */
-export async function searchNearbyHospitals(lat, lng) {
+export async function searchNearbyHospitals(lat, lng, specialty = '') {
   try {
     // Step 1: Reverse geocode to get the city name from coordinates
     const reverseUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10`;
@@ -26,21 +28,59 @@ export async function searchNearbyHospitals(lat, lng) {
     
     console.log(`📍 Detected city: ${city}`);
 
-    // Step 2: Search for hospitals in that city using Photon
-    const query = `hospital near ${city}`;
-    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${lat}&lon=${lng}&limit=10`;
-    console.log(`➡️ Fetching hospitals from Photon: ${url}`);
+    // Step 2: Try specialty-specific search first, then generic hospital
+    let results = [];
+    
+    if (specialty) {
+      console.log(`🔍 Searching for specialty: ${specialty}`);
+      // Try specialty search via Photon
+      results = await searchPhoton(`${specialty} clinic ${city}`, lat, lng);
+      
+      if (results.length === 0) {
+        // Try with just specialty + city
+        results = await searchPhoton(`${specialty} ${city}`, lat, lng);
+      }
+    }
+    
+    // If specialty search found nothing, search generic hospitals
+    if (results.length === 0) {
+      console.log(`🏥 Falling back to generic hospital search near ${city}`);
+      results = await searchPhoton(`hospital ${city}`, lat, lng);
+    }
+
+    // If Photon found nothing at all, use Nominatim
+    if (results.length === 0) {
+      console.warn("⚠️ No Photon results, falling back to Nominatim...");
+      results = await searchViaNominatim(lat, lng);
+    }
+
+    // Tag each result with the recommended specialty
+    if (specialty) {
+      results = results.map(h => ({ ...h, specialty }));
+    }
+
+    console.log(`✅ Found ${results.length} nearby facilities`);
+    return results;
+  } catch (err) {
+    console.error("❌ Hospital search error:", err.message);
+    return await searchViaNominatim(lat, lng);
+  }
+}
+
+/**
+ * Search via Photon API with distance filtering
+ */
+async function searchPhoton(query, lat, lng) {
+  try {
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${lat}&lon=${lng}&limit=15`;
+    console.log(`➡️ Photon: ${url}`);
 
     const res = await axios.get(url, { timeout: 8000 });
     const data = res.data;
 
-    if (!data.features || data.features.length === 0) {
-      console.warn("⚠️ No results from Photon, trying Nominatim search...");
-      return await searchViaNominatim(lat, lng);
-    }
+    if (!data.features || data.features.length === 0) return [];
 
-    // Filter: only keep results that are actually near the user (within ~50km)
-    const results = data.features
+    return data.features
       .map(place => ({
         id: place.properties.osm_id || Math.random().toString(36).substr(2, 9),
         name: place.properties.name || "Hospital",
@@ -54,19 +94,11 @@ export async function searchNearbyHospitals(lat, lng) {
         ].filter(Boolean).join(", ") || "Address not available",
         distance: getDistanceKm(lat, lng, place.geometry.coordinates[1], place.geometry.coordinates[0])
       }))
-      .filter(h => h.distance < 50) // Only keep hospitals within 50km
+      .filter(h => h.distance < 50)
       .sort((a, b) => a.distance - b.distance);
-
-    if (results.length === 0) {
-      console.warn("⚠️ No nearby results after filtering, falling back to Nominatim...");
-      return await searchViaNominatim(lat, lng);
-    }
-
-    console.log(`✅ Found ${results.length} nearby hospitals (filtered)`);
-    return results;
   } catch (err) {
-    console.error("❌ Hospital search error:", err.message);
-    return await searchViaNominatim(lat, lng);
+    console.error("❌ Photon search error:", err.message);
+    return [];
   }
 }
 

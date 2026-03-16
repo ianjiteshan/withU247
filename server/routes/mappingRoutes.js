@@ -112,7 +112,7 @@ router.post("/", async (req, res) => {
     if (lat && lng) {
       console.log("➡️ Step 7: Fetching hospitals from OpenStreetMap (Photon)...");
       try {
-        hospitals = await searchNearbyHospitals(lat, lng);
+        hospitals = await searchNearbyHospitals(lat, lng, mapping.doctorSpecialty);
         console.log(`✅ Found ${hospitals.length} hospitals`);
       } catch (err) {
         console.error("⚠️ OSM fetch failed:", err.message);

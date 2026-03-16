@@ -105,7 +105,7 @@ router.post("/", async (req, res) => {
 
     let hospitals = [];
     if (lat && lng) {
-      hospitals = await searchNearbyHospitals(lat, lng);
+      hospitals = await searchNearbyHospitals(lat, lng, mapping.doctorSpecialty);
     }
 
     // Final Response
