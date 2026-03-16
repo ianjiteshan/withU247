@@ -3,11 +3,10 @@ import { RetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "@langchain/openai";
 import { searchPubMed, fetchPubMedDetails } from "../utils/pubmed.js";
 import SymptomMapping from "../models/SymptomMapping.js";
-import { Client } from "@googlemaps/google-maps-services-js";
 import { vectorStore } from "../utils/vectorStore.js";
+import { searchNearbyHospitals } from "../services/mapsService.js";
 
 const router = express.Router();
-const client = new Client({});
 
 async function getDoctorSpecialty(symptom) {
   const llm = new ChatOpenAI({
@@ -106,21 +105,7 @@ router.post("/", async (req, res) => {
 
     let hospitals = [];
     if (lat && lng) {
-      const gmaps = await client.placesNearby({
-        params: {
-          location: `${lat},${lng}`,
-          radius: 5000,
-          keyword: mapping.doctorSpecialty,
-          key: process.env.GOOGLE_MAPS_API_KEY,
-        },
-      });
-
-      hospitals = gmaps.data.results.map((place) => ({
-        name: place.name,
-        address: place.vicinity,
-        rating: place.rating,
-        location: place.geometry?.location,
-      }));
+      hospitals = await searchNearbyHospitals(lat, lng);
     }
 
     // Final Response
