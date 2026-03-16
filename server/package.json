@@ -1,0 +1,36 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.2",
+    "@langchain/mongodb": "^0.1.0",
+    "@langchain/openai": "^0.6.9",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fetch": "^1.1.0",
+    "from": "^0.1.7",
+    "import": "^0.0.6",
+    "jsonwebtoken": "^9.0.3",
+    "langchain": "^0.3.31",
+    "mongoose": "^8.18.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^5.16.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
